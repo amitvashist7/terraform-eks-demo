@@ -1,23 +1,23 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.31"
+  version = "20.8.3"
 
   cluster_name    = "example"
   cluster_version = "1.31"
-
-  # Optional
-  cluster_endpoint_public_access = false
-
-  # Optional: Adds the current caller identity as an administrator via cluster access entry
-  enable_cluster_creator_admin_permissions = false
-
-  cluster_compute_config = {
-    enabled    = true
-    node_pools = ["general-purpose"]
-  }
-
   vpc_id     = "vpc-0afb97da3e39bd790"
   subnet_ids = ["subnet-0ca4711696dff18e0", "subnet-08081ec18faebf7ac", "subnet-00540c9cac18e133f"]
+
+  enable_irsa = true
+
+  eks_managed_node_groups = {
+    default = {
+      instance_types = ["t3.medium"]
+      desired_size   = 2
+      max_size       = 3
+      min_size       = 1
+    }
+  }
+
 
   tags = {
     Environment = "dev"
